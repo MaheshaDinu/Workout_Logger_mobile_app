@@ -5,7 +5,8 @@
       "@/*": [
         "./src/*"
       ]
-    }
+    },
+    "types": []
   },
   "extends": "expo/tsconfig.base",
   "include": [

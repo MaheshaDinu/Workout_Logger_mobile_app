@@ -12,9 +12,11 @@
         {
           "origin": "https://n"
         }
-      ]
+      ],
+      "expo-font"
     ],
-    "name": "fit-app",
-    "slug": "fit-app"
+    "name": "workout-logger-app",
+    "slug": "workout-logger-app",
+    "version": "1.0.0"
   }
 }
