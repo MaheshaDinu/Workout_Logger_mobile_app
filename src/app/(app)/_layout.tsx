@@ -1,11 +1,29 @@
-import { View, Text } from 'react-native'
 import React from 'react'
 import { Stack } from 'expo-router'
+import { useAuth } from '@clerk/clerk-expo'
+import { ActivityIndicator } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 const Layout = () => {
+     const { isLoaded, isSignedIn, userId, sessionId, getToken } = useAuth()
+
+     console.log("isSignedIn",isSignedIn)
+
+     if (!isLoaded) {
+        <SafeAreaView className='flex-1 justify-center items-center'>
+            <ActivityIndicator size="large" color="#0000ff" />
+        </SafeAreaView>
+     }
   return (
     <Stack>
-        <Stack.Screen name="(tabs)" options={{headerShown: false}} />
+        <Stack.Protected guard={isSignedIn}>
+            <Stack.Screen name="(tabs)" options={{headerShown: false}} />
+        </Stack.Protected>
+
+        <Stack.Protected guard={!isSignedIn}>
+            <Stack.Screen name="sign-in" options={{headerShown: false, title: 'Sign In'}} />
+            <Stack.Screen name="sign-up" options={{headerShown: false, title: 'Sign Up'}} />
+        </Stack.Protected>
     </Stack>
   )
 }
