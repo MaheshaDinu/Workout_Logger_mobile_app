@@ -1,9 +1,11 @@
-import { View, Text } from 'react-native'
+import { View, Text, Image } from 'react-native'
 import React from 'react'
 import { Tabs } from 'expo-router'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { useUser } from '@clerk/clerk-expo';
 
 const Layout = () => {
+    const {user} = useUser();
   return (
     <Tabs>
         <Tabs.Screen name="index" options={{headerShown: false, title: 'Home',
@@ -34,7 +36,7 @@ const Layout = () => {
         }} />
         <Tabs.Screen name="profile" options={{headerShown: false, title: 'Profile',
             tabBarIcon:({color, size}) => (
-                <MaterialCommunityIcons name="account" color={color} size={size} />
+                <Image source={{uri:user?.imageUrl ?? user?.externalAccounts[0]?.imageUrl}} className="w-6 h-6 rounded-full" />
             )
         }} />
     </Tabs>
