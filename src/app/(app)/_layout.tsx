@@ -8,7 +8,7 @@ import { NavigationContainer } from '@react-navigation/native'
 const Layout = () => {
      const { isLoaded, isSignedIn, userId, sessionId, getToken } = useAuth()
 
-     console.log("isSignedIn",isSignedIn)
+     console.log("isSignedIn",isSignedIn," userId: ",userId)
 
      if (!isLoaded) {
         <SafeAreaView className='flex-1 justify-center items-center'>
