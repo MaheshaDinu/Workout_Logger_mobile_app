@@ -1,4 +1,4 @@
-export interface Exercise {
+export  interface Exercise {
   id: string
   name: string
   muscle_group: string
@@ -7,7 +7,7 @@ export interface Exercise {
   created_at?: string
 }
 
-export interface Workout {
+export  interface Workout {
   id: string
   clerk_user_id: string
   exercises: any[]

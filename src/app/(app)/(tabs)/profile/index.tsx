@@ -1,12 +1,15 @@
 import React from "react";
-import { Alert, Text, TouchableOpacity, View,Image } from "react-native";
+import { Alert, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useAuth, useUser } from "@clerk/clerk-expo";
+import { useRouter } from "expo-router";
+import { Image } from "react-native";
 
 export default function ProfilePage() {
   const { signOut } = useAuth();
   const { user } = useUser();
+  const router = useRouter();
 
   const handleSignOut = () => {
     Alert.alert("Sign Out", "Are you sure you want to sign out?", [
@@ -42,7 +45,7 @@ export default function ProfilePage() {
         {/* Action Buttons Section */}
         <View className="flex-1 p-6">
           <TouchableOpacity
-            onPress={() => {}}
+            onPress={() => router.push('profile/settings')}
             className="flex-row items-center p-4 rounded-xl mb-3 bg-white shadow-sm border border-gray-100"
             activeOpacity={0.8}
           >

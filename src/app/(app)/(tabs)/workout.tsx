@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
-  SafeAreaView,
+  
   TouchableOpacity,
   FlatList,
   Modal,
@@ -20,6 +20,7 @@ import {
 } from '@/app/services/workout.service';
 import { Exercise, Workout as WorkoutType } from '@/app/constants/types';
 import { useNavigation } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface WorkoutExercise {
   id: string;
