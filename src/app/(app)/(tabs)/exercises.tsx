@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 const Excersices = () => {
   return (
-    <SafeAreaView className='flex-1 justify-center items-center'>
+    <SafeAreaView className='flex-1 bg-gray-50 '>
       <Text>Excersices</Text>
     </SafeAreaView>
   )
