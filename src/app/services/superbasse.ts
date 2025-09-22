@@ -10,4 +10,4 @@ if (!supabaseAnonKey) {
   throw new Error('Missing EXPO_PUBLIC_SUPABASE_ANON_KEY environment variable')
 }
 
-export const supaabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
