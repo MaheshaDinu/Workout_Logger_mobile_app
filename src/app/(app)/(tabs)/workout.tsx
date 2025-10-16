@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
-  
   TouchableOpacity,
   FlatList,
   Modal,
@@ -42,17 +41,18 @@ const WorkoutPage = () => {
   const [selectedExercise, setSelectedExercise] = useState<WorkoutExercise | null>(null);
   const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState(0);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (isLoaded && userId) {
       loadAllExercises();
-      startWorkoutTimer();
     }
     return () => stopWorkoutTimer();
   }, [isLoaded, userId]);
 
   const startWorkoutTimer = () => {
+    if (timerRef.current) return;
     timerRef.current = setInterval(() => {
       setTimer(prevTimer => prevTimer + 1);
     }, 1000);
@@ -61,7 +61,17 @@ const WorkoutPage = () => {
   const stopWorkoutTimer = () => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
+      timerRef.current = null;
     }
+  };
+
+  const toggleTimer = () => {
+    if (isTimerRunning) {
+      stopWorkoutTimer();
+    } else {
+      startWorkoutTimer();
+    }
+    setIsTimerRunning(!isTimerRunning);
   };
 
   const loadAllExercises = async () => {
@@ -148,12 +158,14 @@ const WorkoutPage = () => {
       Alert.alert("Success", "Workout saved successfully!");
       setCurrentWorkout([]);
       setTimer(0);
-      startWorkoutTimer();
+      setIsTimerRunning(false);
       navigation.goBack();
     } catch (error) {
       console.error('Failed to save workout:', error);
       Alert.alert("Error", "Failed to save workout. Please try again.");
-      startWorkoutTimer(); // Restart timer on failure
+      if (isTimerRunning) {
+        startWorkoutTimer(); // Restart timer if it was running
+      }
     } finally {
       setLoading(false);
     }
@@ -191,8 +203,18 @@ const WorkoutPage = () => {
             <Text className="text-2xl font-bold text-gray-900">Current Workout</Text>
             <Text className="text-sm text-gray-600">Track your progress in real-time</Text>
           </View>
-          <View className="bg-blue-500 rounded-full px-4 py-2">
-            <Text className="text-white font-bold">{formatTimer(timer)}</Text>
+          <View className="flex-row items-center space-x-2">
+            <View className="bg-blue-500 rounded-full px-4 py-2">
+              <Text className="text-white font-bold">{formatTimer(timer)}</Text>
+            </View>
+            <TouchableOpacity
+              onPress={toggleTimer}
+              className={`rounded-full px-4 py-2 ${isTimerRunning ? 'bg-red-500' : 'bg-green-500'}`}
+            >
+              <Text className="text-white font-semibold">
+                {isTimerRunning ? 'Pause' : 'Start'}
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
 

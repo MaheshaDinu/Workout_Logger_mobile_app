@@ -17,6 +17,22 @@
     ],
     "name": "workout-logger-app",
     "slug": "workout-logger-app",
-    "version": "1.0.0"
+    "version": "1.0.1",
+    "icon": "./assets/appLogo.png",
+    "adaptiveIcon": {
+      "foregroundImage": "./assets/Logo.png",
+      "backgroundColor": "#ffffff"
+    },
+    "extra": {
+      "router": {
+        "origin": "https://n"
+      },
+      "eas": {
+        "projectId": "5ce753e0-4518-4067-91cd-103d3c900f0c"
+      }
+    },
+    "android": {
+      "package": "com.maheshadinu.workoutloggerapp"
+    }
   }
 }

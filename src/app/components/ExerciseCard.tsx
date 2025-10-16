@@ -1,6 +1,8 @@
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity, Image, ImageSourcePropType } from 'react-native'
 import React from 'react'
 import { Exercise } from '../constants/types'
+
+
 
 interface ExerciseCardProps {
   item: Exercise
@@ -24,26 +26,19 @@ const ExerciseCard = ({ item, onPress, showChevron = true }: ExerciseCardProps) 
   }
 
   // Helper function to get muscle group emoji
-  const getMuscleGroupEmoji = (muscleGroup: string) => {
-    switch (muscleGroup.toLowerCase()) {
-      case 'chest':
-        return '💪'
-      case 'back':
-        return '🏋️'
-      case 'legs':
-        return '🦵'
-      case 'shoulders':
-        return '💪'
-      case 'arms':
-        return '💪'
-      case 'core':
-        return '🔥'
-      case 'cardio':
-        return '❤️'
-      default:
-        return '🏃'
-    }
-  }
+  const MUSCLE_GROUP_ICONS: { [key: string]: ImageSourcePropType } = {
+  chest: require('../../../assets/muscle_groups/chest.png'),
+  back: require('../../../assets/muscle_groups/back.png'),
+  legs: require('../../../assets/muscle_groups/legs.png'),
+  shoulders: require('../../../assets/muscle_groups/shoulders.png'),
+  arms: require('../../../assets/muscle_groups/arms.png'),
+  core: require('../../../assets/muscle_groups/abs.png'),
+  cardio: require('../../../assets/muscle_groups/cardio.png'),
+};
+  const getMuscleGroupiconSource = (muscleGroup: string) => {
+    const iconName = muscleGroup.toLowerCase();
+    return MUSCLE_GROUP_ICONS[iconName] || MUSCLE_GROUP_ICONS.cardio;
+  };
 
   return (
     <TouchableOpacity
@@ -60,9 +55,7 @@ const ExerciseCard = ({ item, onPress, showChevron = true }: ExerciseCardProps) 
           
           {/* Muscle Group */}
           <View className="flex-row items-center mb-2">
-            <Text className="text-lg mr-2">
-              {getMuscleGroupEmoji(item.muscle_group)}
-            </Text>
+            <Image source={getMuscleGroupiconSource(item.muscle_group)} className="w-6 h-6 mr-2" />
             <Text className="text-sm font-medium text-gray-600 capitalize">
               {item.muscle_group}
             </Text>

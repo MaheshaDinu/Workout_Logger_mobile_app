@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useCallback  } from "react";
 import { Text, View, TouchableOpacity, ScrollView, ActivityIndicator, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Link, useRouter } from "expo-router";
+import { Link, useRouter, useFocusEffect } from "expo-router";
 import { useUser } from "@clerk/clerk-expo";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { getWorkoutStats, getWorkoutAchievements, WorkoutStats } from "@/app/services/workout.service";
+import { getWorkoutStats, getWorkoutAchievements, WorkoutStats, fetchUserWorkouts, fetchRecentWorkouts } from "@/app/services/workout.service";
+import { Workout } from "@/app/constants/types";
 
 // Component to display a single workout stat
 const StatCard = ({ label, value, icon }: { label: string; value: string; icon: keyof typeof Ionicons.glyphMap }) => (
@@ -14,6 +15,20 @@ const StatCard = ({ label, value, icon }: { label: string; value: string; icon: 
     <Text className="text-gray-500 text-sm mt-1">{label}</Text>
   </View>
 );
+// Component to display a single recent workout
+const RecentWorkoutCard = ({ workout }: { workout: Workout }) => (
+  <View className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-3">
+    <Text className="text-lg font-bold text-gray-900 mb-1">Workout on {new Date(workout.workout_date).toLocaleDateString()}</Text>
+    <View className="flex-row items-center mb-1">
+      <Ionicons name="barbell-outline" size={16} color="#6B7280" />
+      <Text className="text-sm text-gray-600 ml-2">{workout.total_sets} Sets</Text>
+    </View>
+    <View className="flex-row items-center">
+      <Ionicons name="time-outline" size={16} color="#6B7280" />
+      <Text className="text-sm text-gray-600 ml-2">{workout.duration} minutes</Text>
+    </View>
+  </View>
+);
 
 export default function Page() {
   const { user } = useUser();
@@ -21,29 +36,34 @@ export default function Page() {
 
   const [stats, setStats] = useState<WorkoutStats | null>(null);
   const [achievements, setAchievements] = useState<{ currentStreak: number } | null>(null);
+  const [recentWorkouts, setRecentWorkouts] = useState<Workout[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!user?.id) return;
-      setLoading(true);
-      try {
-        const [statsData, achievementsData] = await Promise.all([
-          getWorkoutStats(user.id),
-          getWorkoutAchievements(user.id),
-        ]);
-        setStats(statsData);
-        setAchievements(achievementsData);
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  useFocusEffect(
+    useCallback(() => {
+      const fetchData = async () => {
+        if (!user?.id) return;
+        setLoading(true);
+        try {
+          const [statsData, achievementsData, recentWorkoutsData] = await Promise.all([
+            getWorkoutStats(user.id),
+            getWorkoutAchievements(user.id),
+            fetchRecentWorkouts(user.id),
+          ]);
+          setStats(statsData);
+          setAchievements(achievementsData);
+          setRecentWorkouts(recentWorkoutsData);
+        } catch (error) {
+          console.error("Failed to fetch data:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
 
-    fetchData();
-  }, [user?.id]);
-
+      fetchData();
+    }, [user?.id])
+  );
+FragmentDirective                                            
   return (
     <SafeAreaView className="flex flex-1 bg-gray-50">
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 24 }}>
@@ -97,6 +117,20 @@ export default function Page() {
             <Text className="text-white font-bold text-xl mt-2">Start a New Workout</Text>
           </TouchableOpacity>
         </View>
+        {/* Recent Workouts Section */}
+          <View className="mt-8">
+            <Text className="text-2xl font-bold text-gray-900 mb-4">Recent Workouts</Text>
+            {recentWorkouts.length > 0 ? (
+              recentWorkouts.map(workout => (
+                <RecentWorkoutCard key={workout.id} workout={workout} />
+              ))
+            ) : (
+              <View className="bg-white p-6 rounded-xl shadow-sm items-center">
+                <Ionicons name="calendar-outline" size={40} color="#9CA3AF" />
+                <Text className="mt-4 text-center text-gray-600">No recent workouts found. Tap "Start a New Workout" to get started!</Text>
+              </View>
+            )}
+          </View>
       </ScrollView>
     </SafeAreaView>
   );

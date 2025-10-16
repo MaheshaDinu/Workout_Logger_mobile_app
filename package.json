@@ -23,6 +23,7 @@
     "expo-secure-store": "^15.0.7",
     "expo-splash-screen": "~31.0.10",
     "expo-status-bar": "~3.0.8",
+    "lightningcss": "^1.21.7",
     "nativewind": "^4.0.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",

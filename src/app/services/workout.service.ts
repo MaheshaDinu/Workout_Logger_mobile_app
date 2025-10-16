@@ -174,6 +174,36 @@ export const fetchUserWorkouts = async (clerkUserId: string | null): Promise<Wor
   }
 }
 
+// 🆕 Fetch recent workouts
+export const fetchRecentWorkouts = async (clerkUserId: string | null): Promise<Workout[]> => {
+  if (!clerkUserId) {
+    console.log('❌ No user ID provided for recent workouts')
+    return []
+  }
+
+  try {
+    console.log('🆕 Fetching recent workouts...')
+    
+    const { data, error } = await supabase
+      .from('workouts')
+      .select('*')
+      .eq('clerk_user_id', clerkUserId)
+      .order('created_at', { ascending: false })
+      .limit(5)
+    
+    if (error) {
+      console.error('❌ Error fetching recent workouts:', error)
+      return []
+    }
+    
+    console.log(`✅ Fetched ${data?.length || 0} recent workouts`)
+    return data || []
+  } catch (error) {
+    console.error('❌ Unexpected error:', error)
+    return []
+  }
+}
+
 // 📈 Get comprehensive workout statistics
 export const getWorkoutStats = async (clerkUserId: string | null): Promise<WorkoutStats | null> => {
   if (!clerkUserId) {
